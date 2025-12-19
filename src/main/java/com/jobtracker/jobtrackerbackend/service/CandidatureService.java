@@ -9,6 +9,7 @@ import com.jobtracker.jobtrackerbackend.repo.CandidatureRepository;
 import com.jobtracker.jobtrackerbackend.repo.UtilisateurRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -37,10 +38,22 @@ public class CandidatureService {
         r.statut = c.getStatut();
         r.dateEnvoi = c.getDateEnvoi();
         r.dateLimite = c.getDateLimite();
+        r.dateRelance = c.getDateRelance();
         r.notes = c.getNotes();
         r.joursAvantRelance = c.getJoursAvantRelance();
         r.relanceActive = c.getRelanceActive();
         return r;
+    }
+
+    private void calculerEtPoserDateRelance(Candidature c) {
+        LocalDate dateEnvoi = c.getDateEnvoi();
+        Integer jours = c.getJoursAvantRelance();
+
+        if (dateEnvoi != null && jours != null) {
+            c.setDateRelance(dateEnvoi.plusDays(jours));
+        } else {
+            c.setDateRelance(null);
+        }
     }
 
     public List<CandidatureResponse> lister(String email) {
@@ -70,6 +83,9 @@ public class CandidatureService {
         c.setJoursAvantRelance(req.joursAvantRelance);
         c.setRelanceActive(req.relanceActive != null ? req.relanceActive : Boolean.FALSE);
 
+        // 📌 Calcul ici
+        calculerEtPoserDateRelance(c);
+
         return versResponse(candidatureRepo.save(c));
     }
 
@@ -91,6 +107,9 @@ public class CandidatureService {
 
         c.setJoursAvantRelance(req.joursAvantRelance);
         c.setRelanceActive(req.relanceActive);
+
+        // 📌 Recalcul si changement
+        calculerEtPoserDateRelance(c);
 
         return versResponse(candidatureRepo.save(c));
     }

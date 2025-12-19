@@ -39,6 +39,9 @@ public class Candidature {
     private LocalDate dateEnvoi;
     private LocalDate dateLimite;
 
+    // 📌 Calculée par le backend : dateEnvoi + joursAvantRelance
+    private LocalDate dateRelance;
+
     @Column(columnDefinition = "text")
     private String notes;
 

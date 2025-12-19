@@ -14,6 +14,7 @@ public class CandidatureRequest {
     public LocalDate dateEnvoi;
     public LocalDate dateLimite;
 
+    // 📌 On NE demande pas la date de relance au frontend, elle est calculée côté backend
     public String notes;
 
     public Integer joursAvantRelance;

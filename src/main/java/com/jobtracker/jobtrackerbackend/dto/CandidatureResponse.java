@@ -15,6 +15,9 @@ public class CandidatureResponse {
     public LocalDate dateEnvoi;
     public LocalDate dateLimite;
 
+    // 📌 Champ que le frontend utilisera pour l’affichage “Relance dans X jours”
+    public LocalDate dateRelance;
+
     public String notes;
 
     public Integer joursAvantRelance;
