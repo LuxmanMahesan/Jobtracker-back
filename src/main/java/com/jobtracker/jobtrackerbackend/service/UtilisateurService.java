@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 public class UtilisateurService {
 
     private final UtilisateurRepository repo;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encodeur;
 
-    public UtilisateurService(UtilisateurRepository repo) {
+    public UtilisateurService(UtilisateurRepository repo, BCryptPasswordEncoder encodeur) {
         this.repo = repo;
+        this.encodeur = encodeur;
     }
 
     public void register(RegisterRequest req) {
@@ -27,7 +28,7 @@ public class UtilisateurService {
         u.setNom(req.nom);
         u.setPrenom(req.prenom);
         u.setEmail(req.email);
-        u.setMotDePasse(encoder.encode(req.motDePasse));
+        u.setMotDePasse(encodeur.encode(req.motDePasse));
 
         repo.save(u);
     }
@@ -36,7 +37,7 @@ public class UtilisateurService {
         Utilisateur u = repo.findByEmail(req.email)
                 .orElseThrow(() -> new RuntimeException("Email incorrect"));
 
-        if (!encoder.matches(req.motDePasse, u.getMotDePasse())) {
+        if (!encodeur.matches(req.motDePasse, u.getMotDePasse())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
